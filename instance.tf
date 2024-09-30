@@ -47,9 +47,8 @@ resource "google_compute_instance" "default" {
 curl https://raw.githubusercontent.com/motojouya/develop-gce/main/resources/init.sh | bash -s -- ${var.ssh_port}
 EOF
 
-  # TODO 鍵の値はvarに外出しにしたい
   metadata = {
-    "ssh-keys" = "ubuntu:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILg6UtHDNyMNAh0GjaytsJdrUxjtLy3APXqZfNZhvCeT ubuntu"
+    "ssh-keys" = var.ssh_key # ubuntu:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILg6UtHDNyMNAh0GjaytsJdrUxjtLy3APXqZfNZhvCeT ubuntu
   }
 
   scheduling {

@@ -41,6 +41,11 @@ variable "tags" {
   description = "The GCE instance tags. refered by security module."
 }
 
+## ssh config
 variable "ssh_port" {
+  description = "The GCE instance ssh port."
+}
+
+variable "ssh_key" {
   description = "The GCE instance ssh port."
 }
