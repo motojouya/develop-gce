@@ -29,14 +29,14 @@ chown -R ubuntu:ubuntu .
 
 # apt
 apt-get update
-apt-get install -y jq tmux tree xauth git silversearcher-ag sqlite3 curl
+apt-get install -y jq tmux tree xauth git silversearcher-ag sqlite3 curl wget
 
 # node
 curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs
 npm install -g npx typescript typescript-language-server
 
 # litestream
-curl https://github.com/benbjohnson/litestream/releases/download/v0.3.13/litestream-v0.3.13-linux-amd64.deb -O
+wget https://github.com/benbjohnson/litestream/releases/download/v0.3.13/litestream-v0.3.13-linux-amd64.deb
 dpkg -i litestream-v0.3.13-linux-amd64.deb
 # 
 # # apt again
