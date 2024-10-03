@@ -6,9 +6,15 @@ cd /home/ubuntu
 
 # sshd
 curl https://raw.githubusercontent.com/motojouya/develop-gce/main/resources/sshd_config.tmpl -O
-sed -e s/{%port%}/$ssh_port/g sshd_config.tmpl > sshd_config.init
-cp sshd_config.init /etc/ssh/sshd_config
-systemctl restart sshd
+cp sshd_config.tmpl /etc/ssh/sshd_config
+systemctl restart ssh
+
+# ssh port
+curl https://raw.githubusercontent.com/motojouya/develop-gce/main/resources/ssh.socket.tmpl -O
+sed -e s/{%port%}/$ssh_port/g ssh.socket.tmpl > ssh.socket.init
+cp ssh.socket.init /lib/systemd/system/ssh.socket
+systemctl restart ssh.socket
+systemctl daemon-reload
 
 # home
 mkdir .ssh
