@@ -1,23 +1,14 @@
-# data "google_iam_policy" "develop-instance" {
-#   binding {
-#     role = "roles/iam.serviceAccountUser"
-# 
-#     members = [
-#       "user:test@google.com",
-#     ]
-#   }
-# }
-
 ## gceにつけるservice account
 resource "google_service_account" "developer" {
   account_id   = var.service_account_id
   display_name = var.service_account_name
 }
 
-# resource "google_service_account_iam_policy" "admin-account-iam" {
-#   service_account_id = google_service_account.developer.name
-#   policy_data        = data.google_iam_policy.develop-instance.policy_data
-# }
+resource "google_project_iam_member" "developer_role_storage" {
+  project = var.project_id
+  role    = "roles/storage.objectAdmin"
+  member  = "serviceAccount:${google_service_account.developer.email}"
+}
 
 resource "google_compute_instance" "default" {
   name         = var.instance_name
