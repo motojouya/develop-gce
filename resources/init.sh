@@ -15,6 +15,9 @@ sed -e s/{%port%}/$ssh_port/g ssh.socket.tmpl > ssh.socket.init
 cp ssh.socket.init /lib/systemd/system/ssh.socket
 systemctl restart ssh.socket
 systemctl daemon-reload
+# again but mystery
+systemctl restart ssh.socket
+systemctl daemon-reload
 
 # home
 mkdir .ssh
