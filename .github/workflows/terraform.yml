@@ -26,7 +26,7 @@ jobs:
           terraform_version: 1.4.2
 
       - run: terraform fmt -check -recursive
-      - run: terraform init -backend-config="bucket=${{ secrets.bucket_name }}" -backend-config="key=${{ secrets.bucket_prefix }}"
+      - run: terraform init -backend-config="bucket=${{ secrets.bucket_name }}" -backend-config="prefix=${{ secrets.bucket_prefix }}"
       - run: terraform validate
 
       - run: terraform plan -no-color -lock-timeout=60m
