@@ -8,21 +8,6 @@ on:
         required: true
         type: boolean
 
-env:
-  TF_BUCKET_NAME             : ${{ vars.bucket_name }}
-  TF_BUCKET_PREFIX           : ${{ vars.bucket_prefix }}
-  TF_VAR_project_id          : ${{ vars.project_id }}
-  TF_VAR_region              : ${{ vars.region }}
-  TF_VAR_zone                : ${{ vars.zone }}
-  TF_VAR_service_account_id  : ${{ vars.service_account_id }}
-  TF_VAR_service_account_name: ${{ vars.service_account_name }}
-  TF_VAR_instance_name       : ${{ vars.instance_name }}
-  TF_VAR_machine_type        : ${{ vars.machine_type }}
-  TF_VAR_image               : ${{ vars.image }}
-  TF_VAR_tags                : ${{ vars.tags }}
-  TF_VAR_ssh_port            : ${{ vars.ssh_port }}
-  TF_VAR_ssh_key             : ${{ vars.ssh_key }}
-
 jobs:
   create_gce:
     runs-on: ubuntu-latest
@@ -34,21 +19,59 @@ jobs:
       - uses: actions/checkout@v3
       - uses: google-github-actions/auth@v1
         with:
-          workload_identity_provider: ${{ vars.WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.4.2
 
       - run: terraform fmt -check -recursive
       - run: terraform init -backend-config="bucket=$TF_BUCKET_NAME" -backend-config="prefix=$TF_BUCKET_PREFIX"
+      - run: terraform init -backend-config="bucket=${{ secrets.bucket_name }}" -backend-config="key=${{ secrets.bucket_prefix }}"
       - run: terraform validate
+
       - run: terraform plan -no-color -lock-timeout=60m
+        env:
+          TF_VAR_project_id          : ${{ secrets.project_id }}
+          TF_VAR_region              : ${{ secrets.region }}
+          TF_VAR_zone                : ${{ secrets.zone }}
+          TF_VAR_service_account_id  : ${{ secrets.service_account_id }}
+          TF_VAR_service_account_name: ${{ secrets.service_account_name }}
+          TF_VAR_instance_name       : ${{ secrets.instance_name }}
+          TF_VAR_machine_type        : ${{ vars.machine_type }}
+          TF_VAR_image               : ${{ secrets.image }}
+          TF_VAR_tags                : ${{ secrets.tags }}
+          TF_VAR_ssh_port            : ${{ secrets.ssh_port }}
+          TF_VAR_ssh_key             : ${{ secrets.ssh_key }}
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.do_apply
         run: terraform apply -auto-approve -input=false
+        env:
+          TF_VAR_project_id          : ${{ secrets.project_id }}
+          TF_VAR_region              : ${{ secrets.region }}
+          TF_VAR_zone                : ${{ secrets.zone }}
+          TF_VAR_service_account_id  : ${{ secrets.service_account_id }}
+          TF_VAR_service_account_name: ${{ secrets.service_account_name }}
+          TF_VAR_instance_name       : ${{ secrets.instance_name }}
+          TF_VAR_machine_type        : ${{ vars.machine_type }}
+          TF_VAR_image               : ${{ secrets.image }}
+          TF_VAR_tags                : ${{ secrets.tags }}
+          TF_VAR_ssh_port            : ${{ secrets.ssh_port }}
+          TF_VAR_ssh_key             : ${{ secrets.ssh_key }}
 
       - name: Terraform Destroy
         if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && !inputs.do_apply
         run: terraform destroy -auto-approve -input=false
+        env:
+          TF_VAR_project_id          : ${{ secrets.project_id }}
+          TF_VAR_region              : ${{ secrets.region }}
+          TF_VAR_zone                : ${{ secrets.zone }}
+          TF_VAR_service_account_id  : ${{ secrets.service_account_id }}
+          TF_VAR_service_account_name: ${{ secrets.service_account_name }}
+          TF_VAR_instance_name       : ${{ secrets.instance_name }}
+          TF_VAR_machine_type        : ${{ vars.machine_type }}
+          TF_VAR_image               : ${{ secrets.image }}
+          TF_VAR_tags                : ${{ secrets.tags }}
+          TF_VAR_ssh_port            : ${{ secrets.ssh_port }}
+          TF_VAR_ssh_key             : ${{ secrets.ssh_key }}
