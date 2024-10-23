@@ -26,7 +26,6 @@ jobs:
           terraform_version: 1.4.2
 
       - run: terraform fmt -check -recursive
-      - run: terraform init -backend-config="bucket=$TF_BUCKET_NAME" -backend-config="prefix=$TF_BUCKET_PREFIX"
       - run: terraform init -backend-config="bucket=${{ secrets.bucket_name }}" -backend-config="key=${{ secrets.bucket_prefix }}"
       - run: terraform validate
 
